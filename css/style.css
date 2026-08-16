@@ -1,19 +1,20 @@
-/* NEXUS API HUB - CSS Design System */
+/* NEXUS API HUB - Modern Luxury Black & Golden Yellow Design System */
 
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --bg-dark: #0b0f19;
-  --panel-bg: #111827;
-  --panel-border: rgba(255, 255, 255, 0.08);
-  --input-bg: #1f2937;
-  --accent-cyan: #00f2fe;
-  --accent-purple: #8b5cf6;
+  --bg-dark: #09090b;
+  --panel-bg: #121318;
+  --panel-border: rgba(245, 197, 66, 0.18);
+  --input-bg: #1a1c23;
+  --accent-gold: #f5c542;
+  --accent-gold-dark: #d49e1e;
+  --accent-gold-light: #ffe380;
   --accent-green: #10b981;
-  --accent-amber: #f59e0b;
+  --accent-amber: #fbbf24;
   --accent-red: #ef4444;
-  --text-main: #f3f4f6;
-  --text-sub: #9ca3af;
+  --text-main: #fefefe;
+  --text-sub: #a1a1aa;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'Fira Code', monospace;
 }
@@ -45,6 +46,7 @@ body, html {
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .logo-container {
@@ -54,24 +56,24 @@ body, html {
 }
 
 .logo-icon {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  background: linear-gradient(135deg, var(--accent-gold-light), var(--accent-gold-dark));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: #000;
-  box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+  box-shadow: 0 0 16px rgba(245, 197, 66, 0.35);
 }
 
 .logo-text {
   font-size: 1.25rem;
   font-weight: 800;
-  letter-spacing: -0.5px;
-  background: linear-gradient(90deg, #ffffff, var(--accent-cyan));
+  letter-spacing: -0.3px;
+  background: linear-gradient(90deg, #ffffff 40%, var(--accent-gold));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -82,6 +84,7 @@ body, html {
   background: var(--input-bg);
   padding: 4px;
   border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .tab-btn {
@@ -102,8 +105,9 @@ body, html {
 
 .tab-btn.active {
   background: var(--panel-bg);
-  color: var(--accent-cyan);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  color: var(--accent-gold);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 2px 10px rgba(245, 197, 66, 0.15);
 }
 
 .status-indicator {
@@ -111,25 +115,26 @@ body, html {
   align-items: center;
   gap: 8px;
   font-size: 0.85rem;
-  color: var(--accent-green);
-  background: rgba(16, 185, 129, 0.1);
+  font-weight: 600;
+  color: var(--accent-gold);
+  background: rgba(245, 197, 66, 0.1);
   padding: 6px 14px;
   border-radius: 20px;
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid var(--panel-border);
 }
 
 .status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--accent-green);
-  box-shadow: 0 0 8px var(--accent-green);
+  background: var(--accent-gold);
+  box-shadow: 0 0 10px var(--accent-gold);
   animation: pulse-dot 2s infinite;
 }
 
 @keyframes pulse-dot {
   0% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.2); }
+  50% { opacity: 0.5; transform: scale(1.25); }
   100% { opacity: 1; transform: scale(1); }
 }
 
@@ -170,13 +175,14 @@ body, html {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .section-title {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
   color: var(--text-sub);
   margin-bottom: 4px;
 }
@@ -187,7 +193,7 @@ body, html {
   gap: 10px;
   padding: 10px 12px;
   border-radius: 8px;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255,255,255,0.02);
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid transparent;
@@ -196,7 +202,7 @@ body, html {
 .preset-item:hover {
   background: var(--input-bg);
   border-color: var(--panel-border);
-  transform: translateX(3px);
+  transform: translateX(4px);
 }
 
 .method-badge {
@@ -209,8 +215,8 @@ body, html {
 }
 
 .method-get { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
-.method-post { background: rgba(0, 242, 254, 0.15); color: var(--accent-cyan); border: 1px solid rgba(0, 242, 254, 0.3); }
-.method-put { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+.method-post { background: rgba(245, 197, 66, 0.15); color: var(--accent-gold); border: 1px solid rgba(245, 197, 66, 0.3); }
+.method-put { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); border: 1px solid rgba(251, 191, 36, 0.3); }
 .method-delete { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
 
 .preset-name {
@@ -228,6 +234,7 @@ body, html {
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .url-bar {
@@ -238,7 +245,7 @@ body, html {
 
 .method-select {
   background: var(--input-bg);
-  color: var(--text-main);
+  color: var(--accent-gold);
   border: 1px solid var(--panel-border);
   border-radius: 8px;
   padding: 0 16px;
@@ -263,29 +270,29 @@ body, html {
 }
 
 .url-input:focus {
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.15);
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px rgba(245, 197, 66, 0.15);
 }
 
 .send-btn {
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  background: linear-gradient(135deg, var(--accent-gold-light), var(--accent-gold-dark));
   color: #000;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.95rem;
   padding: 0 28px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
+  box-shadow: 0 0 18px rgba(245, 197, 66, 0.3);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .send-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 22px rgba(0, 242, 254, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(245, 197, 66, 0.5);
 }
 
 .send-btn:active {
@@ -313,8 +320,8 @@ body, html {
 }
 
 .sub-tab-btn.active {
-  color: var(--accent-cyan);
-  background: rgba(0, 242, 254, 0.1);
+  color: var(--accent-gold);
+  background: rgba(245, 197, 66, 0.12);
 }
 
 .key-value-row {
@@ -355,6 +362,7 @@ body, html {
   border: 1px solid var(--panel-border);
   border-radius: 12px;
   padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .response-header {
@@ -379,7 +387,7 @@ body, html {
 }
 
 .status-2xx { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
-.status-4xx { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); border: 1px solid rgba(245, 158, 11, 0.3); }
+.status-4xx { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); border: 1px solid rgba(251, 191, 36, 0.3); }
 .status-5xx { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
 
 .time-metric {
@@ -389,13 +397,13 @@ body, html {
 }
 
 .code-viewer {
-  background: #0d1117;
+  background: #08090c;
   border: 1px solid var(--panel-border);
   border-radius: 8px;
   padding: 16px;
   font-family: var(--font-mono);
   font-size: 0.88rem;
-  color: #c9d1d9;
+  color: #e4e4e7;
   max-height: 380px;
   overflow: auto;
   white-space: pre-wrap;
@@ -404,13 +412,13 @@ body, html {
 
 /* Code Snippet Box */
 .snippet-box {
-  background: #0d1117;
+  background: #08090c;
   border: 1px solid var(--panel-border);
   border-radius: 8px;
   padding: 14px;
   font-family: var(--font-mono);
   font-size: 0.82rem;
-  color: var(--accent-cyan);
+  color: var(--accent-gold);
   white-space: pre-wrap;
   margin-top: 12px;
 }
@@ -431,10 +439,11 @@ body, html {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .metric-title {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-sub);
 }
@@ -452,6 +461,7 @@ body, html {
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 #latencyChart {
@@ -473,6 +483,6 @@ body, html {
 }
 
 .icon-btn:hover {
-  color: #fff;
-  border-color: var(--accent-cyan);
+  color: var(--accent-gold);
+  border-color: var(--accent-gold);
 }

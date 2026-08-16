@@ -93,8 +93,8 @@ class AnalyticsEngine {
 
     // Area Fill Gradient
     const grad = ctx.createLinearGradient(0, 0, 0, h);
-    grad.addColorStop(0, 'rgba(0, 242, 254, 0.35)');
-    grad.addColorStop(1, 'rgba(0, 242, 254, 0.0)');
+    grad.addColorStop(0, 'rgba(245, 197, 66, 0.35)');
+    grad.addColorStop(1, 'rgba(245, 197, 66, 0.0)');
 
     ctx.beginPath();
     ctx.moveTo(points[0].x, h);
@@ -108,10 +108,10 @@ class AnalyticsEngine {
     ctx.beginPath();
     ctx.moveTo(points[0].x, points[0].y);
     points.forEach(p => ctx.lineTo(p.x, p.y));
-    ctx.strokeStyle = '#00f2fe';
+    ctx.strokeStyle = '#f5c542';
     ctx.lineWidth = 3;
-    ctx.shadowBlur = 12;
-    ctx.shadowColor = '#00f2fe';
+    ctx.shadowBlur = 14;
+    ctx.shadowColor = '#f5c542';
     ctx.stroke();
 
     // Points
