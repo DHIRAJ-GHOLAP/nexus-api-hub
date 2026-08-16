@@ -68,8 +68,8 @@ class AppController {
         const codeView = document.getElementById('response-viewer');
         if (codeView) {
           navigator.clipboard.writeText(codeView.innerText);
-          copyBtn.innerText = 'COPIED! ✅';
-          setTimeout(() => copyBtn.innerText = 'COPY JSON 📋', 2000);
+          copyBtn.innerText = 'COPIED';
+          setTimeout(() => copyBtn.innerText = 'COPY JSON', 2000);
         }
       });
     }
@@ -105,7 +105,7 @@ class AppController {
     const presets = [
       { name: 'GitHub Profile API', method: 'GET', url: 'https://api.github.com/users/DHIRAJ-GHOLAP' },
       { name: 'JSONPlaceholder Posts', method: 'GET', url: 'https://jsonplaceholder.typicode.com/posts' },
-      { name: 'Create Real Post', method: 'POST', url: 'https://jsonplaceholder.typicode.com/posts', body: '{\n  "title": "Production Test",\n  "body": "Live HTTP Request via NEXUS API HUB",\n  "userId": 101\n}' },
+      { name: 'Create Post Request', method: 'POST', url: 'https://jsonplaceholder.typicode.com/posts', body: '{\n  "title": "Production Test",\n  "body": "Live HTTP Request via NEXUS API HUB",\n  "userId": 101\n}' },
       { name: 'Open-Meteo Weather API', method: 'GET', url: 'https://api.open-meteo.com/v1/forecast?latitude=40.71&longitude=-74.00&current_weather=true' },
       { name: 'HTTPBin IP Echo', method: 'GET', url: 'https://httpbin.org/ip' }
     ];
@@ -177,14 +177,14 @@ class AppController {
     const viewer = document.getElementById('response-viewer');
     const headersViewer = document.getElementById('response-headers-viewer');
 
-    if (sendBtn) sendBtn.innerHTML = 'EXECUTING REAL REQUEST... ⏳';
+    if (sendBtn) sendBtn.innerText = 'EXECUTING REQUEST...';
 
     // Environment variable resolution
     const finalUrl = collectionsManager.replaceVariables(this.currentUrl);
     const rawBody = document.getElementById('req-body')?.value || '';
     const finalBody = collectionsManager.replaceVariables(rawBody);
 
-    // Build real headers dictionary
+    // Build headers dictionary
     const headersDict = {};
     this.customHeaders.forEach(h => {
       if (h.key && h.value && h.enabled !== false) {
@@ -212,7 +212,6 @@ class AppController {
       status = response.status;
       statusText = response.statusText || (status === 200 ? 'OK' : 'Response Received');
 
-      // Extract real response headers
       response.headers.forEach((val, key) => {
         respHeadersObj[key] = val;
       });
@@ -232,8 +231,8 @@ class AppController {
       status = 500;
       statusText = 'Network Error / CORS Restrained';
       data = {
-        error: err.message || 'Failed to fetch real HTTP resource.',
-        hint: 'If requesting a external server, ensure the target server enables CORS headers (Access-Control-Allow-Origin: *).'
+        error: err.message || 'Failed to fetch HTTP resource.',
+        hint: 'If requesting an external server, ensure the target server enables CORS headers (Access-Control-Allow-Origin: *).'
       };
     }
 
@@ -241,7 +240,6 @@ class AppController {
     const jsonStr = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
     sizeBytes = new Blob([jsonStr]).size;
 
-    // Record analytics & history
     analytics.recordRequest(duration, status);
     collectionsManager.addToHistory({
       method: this.currentMethod,
@@ -250,8 +248,7 @@ class AppController {
       duration: duration
     });
 
-    // Update UI
-    if (sendBtn) sendBtn.innerHTML = 'SEND REQUEST 🚀';
+    if (sendBtn) sendBtn.innerText = 'EXECUTE REQUEST';
 
     if (statusBadge) {
       statusBadge.innerText = `${status} ${statusText}`;
@@ -311,12 +308,12 @@ class AppController {
       const card = document.createElement('div');
       card.className = 'request-card';
       card.innerHTML = `
-        <div class="section-title" style="color:var(--accent-gold); margin-bottom:12px;">📁 ${col.name}</div>
-        <div style="display:flex; flex-direction:column; gap:8px;">
+        <div class="section-title" style="color:var(--accent-gold); margin-bottom:12px;">${col.name}</div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
           ${col.requests.map(r => `
             <div class="preset-item" onclick="window.app.loadRequest('${r.method}', '${r.url}')">
               <span class="method-badge method-${r.method.toLowerCase()}">${r.method}</span>
-              <span style="font-family:var(--font-mono); font-size:0.88rem;">${r.name}</span>
+              <span style="font-family:var(--font-mono); font-size:0.84rem;">${r.name}</span>
             </div>
           `).join('')}
         </div>
