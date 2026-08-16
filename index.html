@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS API HUB - Real-Time API Playground, Mock Server & Analytics</title>
+  <meta name="description" content="Centralized platform for seamless API management, real-time testing, mock endpoint creation, and performance analytics.">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
+  
+  <!-- CSS Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top App Header -->
+  <header class="app-header">
+    <div class="logo-container">
+      <div class="logo-icon">🌐</div>
+      <div class="logo-text">NEXUS API HUB</div>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="playground">PLAYGROUND</button>
+      <button class="tab-btn" data-tab="mock-studio">MOCK STUDIO</button>
+      <button class="tab-btn" data-tab="analytics">ANALYTICS & HEALTH</button>
+    </nav>
+
+    <div class="status-indicator">
+      <div class="status-dot"></div>
+      <span>HUB ONLINE</span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+
+    <!-- 1. PLAYGROUND TAB -->
+    <section id="tab-playground" class="tab-content active">
+      <div class="playground-grid">
+        
+        <!-- Left Sidebar Presets -->
+        <aside class="sidebar-panel">
+          <div class="section-title">REQUEST PRESETS</div>
+          <div id="presets-list" style="display:flex; flex-direction:column; gap:8px;">
+            <!-- Dynamically Rendered -->
+          </div>
+
+          <div class="section-title" style="margin-top:20px;">ENVIRONMENT</div>
+          <div style="background:var(--input-bg); padding:10px 14px; border-radius:8px; border:1px solid var(--panel-border); font-size:0.85rem;">
+            <div style="color:var(--text-sub); font-weight:600;">ACTIVE ENV</div>
+            <div style="color:var(--accent-cyan); font-weight:700; font-family:var(--font-mono); margin-top:2px;">production-us-east</div>
+          </div>
+        </aside>
+
+        <!-- Right Main Editor Area -->
+        <main>
+          <!-- URL & Method Bar -->
+          <div class="request-card">
+            <div class="url-bar">
+              <select id="req-method" class="method-select">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+                <option value="PATCH">PATCH</option>
+              </select>
+
+              <input id="req-url" type="text" class="url-input" value="https://jsonplaceholder.typicode.com/posts/1" placeholder="Enter API request URL or /api/v1/mock...">
+              
+              <button id="btn-send-req" class="send-btn">
+                SEND REQUEST 🚀
+              </button>
+            </div>
+
+            <!-- Sub Tabs: Request Body -->
+            <div class="sub-tabs">
+              <button class="sub-tab-btn active">JSON BODY</button>
+              <button class="sub-tab-btn">HEADERS</button>
+            </div>
+
+            <textarea id="req-body" class="body-editor" placeholder="Enter JSON payload for POST/PUT requests...">{
+  "title": "Nexus API Test Payload",
+  "author": "Developer",
+  "status": "published"
+}</textarea>
+          </div>
+
+          <!-- Response Inspector -->
+          <div class="response-card">
+            <div class="response-header">
+              <div class="section-title">RESPONSE INSPECTOR</div>
+
+              <div class="response-metrics">
+                <div id="resp-status" class="response-status status-2xx">200 OK</div>
+                <div id="resp-time" class="time-metric">Time: -- ms</div>
+                <div id="resp-size" class="time-metric">Size: -- B</div>
+                <button id="btn-copy-response" class="icon-btn">COPY JSON 📋</button>
+              </div>
+            </div>
+
+            <div id="response-viewer" class="code-viewer">{
+  "info": "Click 'SEND REQUEST' to execute the API call and view response payload here."
+}</div>
+
+            <!-- Code Snippet Generator -->
+            <div style="margin-top:24px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div class="section-title">CODE GENERATOR</div>
+                <div style="display:flex; gap:8px;">
+                  <button class="sub-tab-btn snippet-lang-btn active" data-lang="curl">cURL</button>
+                  <button class="sub-tab-btn snippet-lang-btn" data-lang="javascript">JavaScript</button>
+                  <button class="sub-tab-btn snippet-lang-btn" data-lang="python">Python</button>
+                  <button class="sub-tab-btn snippet-lang-btn" data-lang="go">Go</button>
+                </div>
+              </div>
+
+              <div id="snippet-code" class="snippet-box">curl -X GET "https://jsonplaceholder.typicode.com/posts/1" \
+  -H "Content-Type: application/json"</div>
+            </div>
+
+          </div>
+        </main>
+
+      </div>
+    </section>
+
+    <!-- 2. MOCK STUDIO TAB -->
+    <section id="tab-mock-studio" class="tab-content">
+      <div style="display:grid; grid-template-columns: 360px 1fr; gap:20px;">
+        
+        <!-- Create Mock Form -->
+        <div class="request-card">
+          <div class="section-title" style="margin-bottom:16px;">CREATE MOCK ENDPOINT</div>
+
+          <form id="mock-endpoint-form" style="display:flex; flex-direction:column; gap:14px;">
+            <div>
+              <label style="font-size:0.8rem; color:var(--text-sub); display:block; margin-bottom:4px;">HTTP METHOD</label>
+              <select id="mock-method" class="method-select" style="width:100%;">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:0.8rem; color:var(--text-sub); display:block; margin-bottom:4px;">ENDPOINT PATH</label>
+              <input id="mock-path" type="text" class="kv-input" value="/api/v1/products" placeholder="/api/v1/resource">
+            </div>
+
+            <div style="display:flex; gap:10px;">
+              <div style="flex:1;">
+                <label style="font-size:0.8rem; color:var(--text-sub); display:block; margin-bottom:4px;">STATUS CODE</label>
+                <input id="mock-status" type="number" class="kv-input" value="200">
+              </div>
+              <div style="flex:1;">
+                <label style="font-size:0.8rem; color:var(--text-sub); display:block; margin-bottom:4px;">DELAY (MS)</label>
+                <input id="mock-delay" type="number" class="kv-input" value="150">
+              </div>
+            </div>
+
+            <div>
+              <label style="font-size:0.8rem; color:var(--text-sub); display:block; margin-bottom:4px;">JSON RESPONSE BODY</label>
+              <textarea id="mock-json" class="body-editor" style="height:120px;">{
+  "status": "success",
+  "items": [
+    { "id": 1, "product": "Cyber Deck X1" }
+  ]
+}</textarea>
+            </div>
+
+            <button type="submit" class="send-btn" style="justify-content:center; padding:12px;">
+              CREATE MOCK ENDPOINT ⚡
+            </button>
+          </form>
+        </div>
+
+        <!-- Active Mock Endpoints List -->
+        <div class="request-card">
+          <div class="section-title" style="margin-bottom:16px;">ACTIVE MOCK ENDPOINTS</div>
+          <div id="mock-endpoints-list" style="display:flex; flex-direction:column; gap:10px;">
+            <!-- Dynamically Rendered -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. ANALYTICS & HEALTH TAB -->
+    <section id="tab-analytics" class="tab-content">
+      <!-- Metrics Overview -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-title">TOTAL REQUESTS EXECUTED</div>
+          <div id="stat-total-req" class="metric-value">0</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">AVERAGE LATENCY</div>
+          <div id="stat-avg-lat" class="metric-value" style="color:var(--accent-cyan);">-- ms</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">SUCCESS RATE</div>
+          <div id="stat-success-rate" class="metric-value" style="color:var(--accent-green);">100%</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-title">MOCK SERVICES</div>
+          <div class="metric-value" style="color:var(--accent-purple);">ACTIVE</div>
+        </div>
+      </div>
+
+      <!-- Real-Time Chart -->
+      <div class="chart-card">
+        <div class="section-title" style="margin-bottom:16px;">REAL-TIME LATENCY (MS) MONITOR</div>
+        <canvas id="latencyChart"></canvas>
+      </div>
+
+      <!-- Health Checks -->
+      <div class="request-card">
+        <div class="section-title" style="margin-bottom:16px;">LIVE SERVICE HEALTH MONITOR</div>
+        <div id="health-checks-list" style="display:flex; flex-direction:column; gap:10px;">
+          <!-- Dynamically Rendered -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JavaScript Scripts -->
+  <script src="js/mockServer.js?v=1"></script>
+  <script src="js/analytics.js?v=1"></script>
+  <script src="js/app.js?v=1"></script>
+</body>
+</html>
