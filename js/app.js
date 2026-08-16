@@ -1,4 +1,4 @@
-/* NEXUS API HUB - Main Dashboard Application Controller */
+/* NEXUS API HUB - Main Production Application Controller */
 
 class AppController {
   constructor() {
@@ -6,10 +6,16 @@ class AppController {
     this.currentUrl = 'https://jsonplaceholder.typicode.com/posts/1';
     this.activeTab = 'playground';
     this.activeSnippetLang = 'curl';
+    this.customHeaders = [
+      { key: 'Content-Type', value: 'application/json', enabled: true },
+      { key: 'Accept', value: 'application/json', enabled: true }
+    ];
 
     this.bindEvents();
     this.renderPresets();
-    this.renderMockEndpointsList();
+    this.renderHeadersEditor();
+    this.renderCollectionsList();
+    this.renderEnvironmentUI();
     analytics.init();
   }
 
@@ -68,12 +74,12 @@ class AppController {
       });
     }
 
-    // Mock Form submit
-    const mockForm = document.getElementById('mock-endpoint-form');
-    if (mockForm) {
-      mockForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        this.createMockEndpoint();
+    // Add Header Row Button
+    const addHeaderBtn = document.getElementById('btn-add-header');
+    if (addHeaderBtn) {
+      addHeaderBtn.addEventListener('click', () => {
+        this.customHeaders.push({ key: '', value: '', enabled: true });
+        this.renderHeadersEditor();
       });
     }
   }
@@ -97,12 +103,11 @@ class AppController {
 
   renderPresets() {
     const presets = [
-      { name: 'Get Users List', method: 'GET', url: 'https://jsonplaceholder.typicode.com/users' },
-      { name: 'Get Single Post', method: 'GET', url: 'https://jsonplaceholder.typicode.com/posts/1' },
-      { name: 'Mock Users API', method: 'GET', url: '/api/v1/users' },
-      { name: 'Mock Auth Login', method: 'POST', url: '/api/v1/login', body: '{\n  "username": "admin",\n  "password": "secret_password"\n}' },
-      { name: 'Mock Analytics', method: 'GET', url: '/api/v1/analytics' },
-      { name: 'Live Weather API', method: 'GET', url: 'https://api.open-meteo.com/v1/forecast?latitude=40.71&longitude=-74.00&current_weather=true' }
+      { name: 'GitHub Profile API', method: 'GET', url: 'https://api.github.com/users/DHIRAJ-GHOLAP' },
+      { name: 'JSONPlaceholder Posts', method: 'GET', url: 'https://jsonplaceholder.typicode.com/posts' },
+      { name: 'Create Real Post', method: 'POST', url: 'https://jsonplaceholder.typicode.com/posts', body: '{\n  "title": "Production Test",\n  "body": "Live HTTP Request via NEXUS API HUB",\n  "userId": 101\n}' },
+      { name: 'Open-Meteo Weather API', method: 'GET', url: 'https://api.open-meteo.com/v1/forecast?latitude=40.71&longitude=-74.00&current_weather=true' },
+      { name: 'HTTPBin IP Echo', method: 'GET', url: 'https://httpbin.org/ip' }
     ];
 
     const container = document.getElementById('presets-list');
@@ -134,59 +139,118 @@ class AppController {
     });
   }
 
+  renderHeadersEditor() {
+    const container = document.getElementById('headers-editor-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+    this.customHeaders.forEach((h, index) => {
+      const row = document.createElement('div');
+      row.className = 'key-value-row';
+      row.innerHTML = `
+        <input type="text" class="kv-input" placeholder="Header Key (e.g. Authorization)" value="${h.key}" onchange="window.app.updateHeader(${index}, 'key', this.value)">
+        <input type="text" class="kv-input" placeholder="Header Value (e.g. Bearer token...)" value="${h.value}" onchange="window.app.updateHeader(${index}, 'value', this.value)">
+        <button class="icon-btn" style="color:var(--accent-red);" onclick="window.app.removeHeader(${index})">✕</button>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  updateHeader(index, field, val) {
+    if (this.customHeaders[index]) {
+      this.customHeaders[index][field] = val;
+      this.updateSnippet();
+    }
+  }
+
+  removeHeader(index) {
+    this.customHeaders.splice(index, 1);
+    this.renderHeadersEditor();
+    this.updateSnippet();
+  }
+
   async sendRequest() {
     const sendBtn = document.getElementById('btn-send-req');
     const statusBadge = document.getElementById('resp-status');
     const timeMetric = document.getElementById('resp-time');
     const sizeMetric = document.getElementById('resp-size');
     const viewer = document.getElementById('response-viewer');
+    const headersViewer = document.getElementById('response-headers-viewer');
 
-    if (sendBtn) sendBtn.innerHTML = 'SENDING... ⏳';
+    if (sendBtn) sendBtn.innerHTML = 'EXECUTING REAL REQUEST... ⏳';
+
+    // Environment variable resolution
+    const finalUrl = collectionsManager.replaceVariables(this.currentUrl);
+    const rawBody = document.getElementById('req-body')?.value || '';
+    const finalBody = collectionsManager.replaceVariables(rawBody);
+
+    // Build real headers dictionary
+    const headersDict = {};
+    this.customHeaders.forEach(h => {
+      if (h.key && h.value && h.enabled !== false) {
+        headersDict[h.key] = collectionsManager.replaceVariables(h.value);
+      }
+    });
 
     const startTime = performance.now();
     let status = 200;
     let statusText = 'OK';
     let data = null;
+    let respHeadersObj = {};
     let sizeBytes = 0;
 
-    // Check if matching mock server endpoint
-    const mockMatch = mockServer.match(this.currentUrl, this.currentMethod);
-
     try {
-      if (mockMatch) {
-        const mockRes = await mockServer.handleRequest(mockMatch);
-        status = mockRes.status;
-        statusText = mockRes.statusText;
-        data = mockRes.data;
-      } else {
-        const reqBody = document.getElementById('req-body')?.value;
-        const options = {
-          method: this.currentMethod,
-          headers: { 'Content-Type': 'application/json' }
-        };
-        if (this.currentMethod !== 'GET' && this.currentMethod !== 'HEAD' && reqBody) {
-          options.body = reqBody;
-        }
+      const options = {
+        method: this.currentMethod,
+        headers: headersDict
+      };
+      if (this.currentMethod !== 'GET' && this.currentMethod !== 'HEAD' && finalBody) {
+        options.body = finalBody;
+      }
 
-        const response = await fetch(this.currentUrl, options);
-        status = response.status;
-        statusText = response.statusText;
+      const response = await fetch(finalUrl, options);
+      status = response.status;
+      statusText = response.statusText || (status === 200 ? 'OK' : 'Response Received');
+
+      // Extract real response headers
+      response.headers.forEach((val, key) => {
+        respHeadersObj[key] = val;
+      });
+
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
         data = await response.json();
+      } else {
+        const textData = await response.text();
+        try {
+          data = JSON.parse(textData);
+        } catch (e) {
+          data = { rawText: textData };
+        }
       }
     } catch (err) {
       status = 500;
-      statusText = 'Network Error / CORS Restriction';
-      data = { error: err.message || 'Failed to fetch resource' };
+      statusText = 'Network Error / CORS Restrained';
+      data = {
+        error: err.message || 'Failed to fetch real HTTP resource.',
+        hint: 'If requesting a external server, ensure the target server enables CORS headers (Access-Control-Allow-Origin: *).'
+      };
     }
 
     const duration = Math.round(performance.now() - startTime);
-    const jsonStr = JSON.stringify(data, null, 2);
+    const jsonStr = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
     sizeBytes = new Blob([jsonStr]).size;
 
-    // Record metrics
+    // Record analytics & history
     analytics.recordRequest(duration, status);
+    collectionsManager.addToHistory({
+      method: this.currentMethod,
+      url: finalUrl,
+      status: status,
+      duration: duration
+    });
 
-    // Update Response UI
+    // Update UI
     if (sendBtn) sendBtn.innerHTML = 'SEND REQUEST 🚀';
 
     if (statusBadge) {
@@ -197,6 +261,7 @@ class AppController {
     if (timeMetric) timeMetric.innerText = `Time: ${duration} ms`;
     if (sizeMetric) sizeMetric.innerText = `Size: ${sizeBytes} B`;
     if (viewer) viewer.innerText = jsonStr;
+    if (headersViewer) headersViewer.innerText = JSON.stringify(respHeadersObj, null, 2);
   }
 
   updateSnippet() {
@@ -204,72 +269,80 @@ class AppController {
     if (!box) return;
 
     const method = this.currentMethod;
-    const url = this.currentUrl;
-    const body = document.getElementById('req-body')?.value || '';
+    const url = collectionsManager.replaceVariables(this.currentUrl);
+    const body = collectionsManager.replaceVariables(document.getElementById('req-body')?.value || '');
+
+    let headersStr = '';
+    this.customHeaders.forEach(h => {
+      if (h.key && h.value) {
+        headersStr += `  -H "${h.key}: ${h.value}" \\\n`;
+      }
+    });
 
     let code = '';
-
     if (this.activeSnippetLang === 'curl') {
-      code = `curl -X ${method} "${url}" \\\n  -H "Content-Type: application/json"`;
-      if (body && method !== 'GET') code += ` \\\n  -d '${body.replace(/\n/g, '')}'`;
+      code = `curl -X ${method} "${url}" \\\n${headersStr}`;
+      if (body && method !== 'GET') code += `  -d '${body.replace(/\n/g, '')}'`;
     } else if (this.activeSnippetLang === 'javascript') {
-      code = `fetch("${url}", {\n  method: "${method}",\n  headers: { "Content-Type": "application/json" }${body && method !== 'GET' ? `,\n  body: JSON.stringify(${body})` : ''}\n})\n.then(res => res.json())\n.then(data => console.log(data));`;
+      code = `fetch("${url}", {\n  method: "${method}",\n  headers: ${JSON.stringify(this.getHeadersObj(), null, 4)}${body && method !== 'GET' ? `,\n  body: JSON.stringify(${body})` : ''}\n})\n.then(res => res.json())\n.then(data => console.log(data));`;
     } else if (this.activeSnippetLang === 'python') {
-      code = `import requests\n\nurl = "${url}"\nresponse = requests.${method.toLowerCase()}(url)\nprint(response.json())`;
+      code = `import requests\n\nurl = "${url}"\nheaders = ${JSON.stringify(this.getHeadersObj(), null, 4)}\nresponse = requests.${method.toLowerCase()}(url, headers=headers)\nprint(response.json())`;
     } else if (this.activeSnippetLang === 'go') {
-      code = `package main\nimport ("fmt"; "net/http")\nfunc main() {\n  resp, _ := http.Get("${url}")\n  fmt.Println(resp.Status)\n}`;
+      code = `package main\nimport ("fmt"; "net/http")\nfunc main() {\n  req, _ := http.NewRequest("${method}", "${url}", nil)\n  resp, _ := http.DefaultClient.Do(req)\n  fmt.Println(resp.Status)\n}`;
     }
 
     box.innerText = code;
   }
 
-  createMockEndpoint() {
-    const path = document.getElementById('mock-path')?.value;
-    const method = document.getElementById('mock-method')?.value;
-    const status = document.getElementById('mock-status')?.value;
-    const delay = document.getElementById('mock-delay')?.value;
-    const jsonStr = document.getElementById('mock-json')?.value;
-
-    let jsonParsed = {};
-    try {
-      jsonParsed = JSON.parse(jsonStr);
-    } catch (e) {
-      alert('Invalid JSON response body format!');
-      return;
-    }
-
-    mockServer.addEndpoint(method, path, status, delay, jsonParsed);
-    this.renderMockEndpointsList();
-    alert(`Mock Endpoint ${method} ${path} created successfully!`);
+  getHeadersObj() {
+    const obj = {};
+    this.customHeaders.forEach(h => {
+      if (h.key && h.value) obj[h.key] = h.value;
+    });
+    return obj;
   }
 
-  renderMockEndpointsList() {
-    const container = document.getElementById('mock-endpoints-list');
+  renderCollectionsList() {
+    const container = document.getElementById('collections-list');
     if (!container) return;
 
     container.innerHTML = '';
-    mockServer.endpoints.forEach(ep => {
+    collectionsManager.collections.forEach(col => {
       const card = document.createElement('div');
-      card.className = 'preset-item';
-      card.style.justifyContent = 'space-between';
+      card.className = 'request-card';
       card.innerHTML = `
-        <div style="display:flex; align-items:center; gap:12px;">
-          <span class="method-badge method-${ep.method.toLowerCase()}">${ep.method}</span>
-          <span style="font-family:var(--font-mono); font-size:0.9rem; font-weight:600;">${ep.path}</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:14px;">
-          <span style="font-size:0.82rem; color:var(--accent-green);">${ep.status} OK</span>
-          <span style="font-size:0.82rem; color:var(--text-sub);">${ep.delay}ms</span>
-          <button class="icon-btn" style="color:var(--accent-red); padding:3px 8px;" onclick="window.app.deleteMock('${ep.id}')">✕</button>
+        <div class="section-title" style="color:var(--accent-gold); margin-bottom:12px;">📁 ${col.name}</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          ${col.requests.map(r => `
+            <div class="preset-item" onclick="window.app.loadRequest('${r.method}', '${r.url}')">
+              <span class="method-badge method-${r.method.toLowerCase()}">${r.method}</span>
+              <span style="font-family:var(--font-mono); font-size:0.88rem;">${r.name}</span>
+            </div>
+          `).join('')}
         </div>
       `;
       container.appendChild(card);
     });
   }
 
-  deleteMock(id) {
-    mockServer.deleteEndpoint(id);
-    this.renderMockEndpointsList();
+  loadRequest(method, url) {
+    this.currentMethod = method;
+    this.currentUrl = url;
+
+    const methodEl = document.getElementById('req-method');
+    const urlEl = document.getElementById('req-url');
+
+    if (methodEl) methodEl.value = method;
+    if (urlEl) urlEl.value = url;
+
+    this.switchTab('playground');
+    this.updateSnippet();
+  }
+
+  renderEnvironmentUI() {
+    const activeEnv = collectionsManager.getActiveEnv();
+    const envBadge = document.getElementById('active-env-badge');
+    if (envBadge) envBadge.innerText = activeEnv.name;
   }
 }
 

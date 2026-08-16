@@ -3,12 +3,12 @@
   ![NEXUS API HUB Banner](assets/banner.jpg)
 
   # 🌐 NEXUS API HUB 🌐
-  ### *Real-Time API Playground, Mock Server Studio & Performance Analytics*
+  ### *Production REST API Playground, Collections & Real-Time Performance Studio*
 
   [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE)
   [![HTML5](https://img.shields.io/badge/HTML5-ES6+-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
   [![CSS3](https://img.shields.io/badge/CSS3-Vanilla%20Design%20System-1572B6?logo=css3&logoColor=white)](#)
-  [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-00f2fe)](#)
+  [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-f5c542)](#)
 
 </div>
 
@@ -16,28 +16,28 @@
 
 ## 🚀 Overview
 
-**NEXUS API HUB** is an open-source, lightweight, zero-dependency REST API playground, mock server studio, and real-time network analytics dashboard.
+**NEXUS API HUB** is an open-source, production-ready, lightweight REST API testing playground and collections platform.
 
-Whether you're testing external APIs, crafting mock endpoints for front-end prototyping, or analyzing live API latency metrics, NEXUS API HUB gives developers a streamlined Postman-like experience straight in the browser.
+Designed for developers who need a sleek, high-performance web tool without complex setup or heavy desktop installs, NEXUS API HUB allows you to execute real HTTP API requests, inspect status codes, measure latency, manage custom headers, and organize request collections straight from your browser.
 
 ---
 
-## 🔥 Key Features
+## 🔥 Production Features
 
-- ⚡ **Interactive API Playground**: Support for `GET`, `POST`, `PUT`, `DELETE`, and `PATCH` requests with custom URL params, headers, and JSON body payload editor.
-- 🛠️ **Built-in Mock Server Studio**: Create custom mock endpoints (`/api/v1/users`, `/api/v1/login`, etc.) with customizable HTTP status codes (200, 201, 400, 404, 500), simulated network delay (ms), and custom JSON payloads.
-- 📊 **Real-Time Latency & Health Analytics**: Live HTML5 Canvas latency line graph, total request counters, success rate percentages, and automated health checks for public APIs.
-- 💻 **Instant Code Generator**: Automatically generates production-ready code snippets in **cURL**, **JavaScript (`fetch`)**, **Python (`requests`)**, and **Go**.
-- 📋 **Response Inspector**: Formatted JSON code viewer, HTTP status badge (2xx/4xx/5xx), execution duration timer, payload byte size counter, and 1-click clipboard copy.
-- 💾 **Local Persistence**: Save custom mock endpoints and request history in browser `localStorage`.
+- ⚡ **Real HTTP API Execution**: Support for real `GET`, `POST`, `PUT`, `DELETE`, `PATCH`, `HEAD`, and `OPTIONS` requests against any live CORS-enabled API.
+- 🔑 **Custom Headers & Environment Variables**: Add custom HTTP headers (`Authorization: Bearer <token>`, `X-API-Key`, `Content-Type`) and environment variable interpolation (`{{baseUrl}}`, `{{apiKey}}`).
+- 📁 **API Collections & Workspaces**: Organize API requests into structured collections (GitHub API, Payment Gateways, Weather APIs, Custom Backends) with `localStorage` persistence.
+- 📊 **Real-Time Network Latency & Health Checks**: HTML5 Canvas latency monitoring graph, total request counters, success rate percentages, and automated ping checks for live production APIs.
+- 💻 **Multi-Language Code Snippet Generator**: Instantly exports production-ready code snippets in **cURL**, **JavaScript (`fetch`)**, **Python (`requests`)**, and **Go**.
+- 📋 **Response Inspector**: Formatted JSON viewer with status badges (`200 OK`, `401 Unauthorized`, `404 Not Found`, `500 Error`), roundtrip latency timer (ms), payload byte size counter, and 1-click clipboard copy.
 
 ---
 
 ## 🕹️ Quick Start / How to Run Locally
 
-NEXUS API HUB requires zero build steps or package managers.
+NEXUS API HUB is built with pure web technologies — zero build steps or package managers required.
 
-### Option 1: Python Server
+### Option 1: Python HTTP Server
 ```bash
 # Clone the repository
 git clone https://github.com/DHIRAJ-GHOLAP/nexus-api-hub.git
@@ -52,23 +52,6 @@ Open your browser at `http://localhost:8080`.
 ```bash
 npx serve .
 ```
-
----
-
-## 📦 Deploy to GitHub Pages
-
-1. Create a repository named `nexus-api-hub` on GitHub.
-2. Initialize git and push:
-```bash
-cd nexus-api-hub
-git init
-git add .
-git commit -m "Initial commit: NEXUS API HUB Platform"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/nexus-api-hub.git
-git push -u origin main
-```
-3. Enable GitHub Pages in **Repository Settings -> Pages -> Branch: main -> Save**.
 
 ---
 

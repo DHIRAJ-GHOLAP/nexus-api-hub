@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NEXUS API HUB - Real-Time API Playground, Mock Server & Analytics</title>
-  <meta name="description" content="Centralized platform for seamless API management, real-time testing, mock endpoint creation, and performance analytics.">
+  <title>NEXUS API HUB - Production REST API Playground & Collections Platform</title>
+  <meta name="description" content="Centralized platform for seamless production API management, real HTTP request execution, environment variables, and performance analytics.">
 
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
   
   <!-- CSS Styles -->
-  <link rel="stylesheet" href="css/style.css?v=3">
+  <link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body>
 
@@ -22,35 +22,35 @@
     </div>
 
     <nav class="nav-tabs">
-      <button class="tab-btn active" data-tab="playground">PLAYGROUND</button>
-      <button class="tab-btn" data-tab="mock-studio">MOCK STUDIO</button>
+      <button class="tab-btn active" data-tab="playground">API PLAYGROUND</button>
+      <button class="tab-btn" data-tab="collections">COLLECTIONS & ENVS</button>
       <button class="tab-btn" data-tab="analytics">ANALYTICS & HEALTH</button>
     </nav>
 
     <div class="status-indicator">
       <div class="status-dot"></div>
-      <span>HUB ONLINE</span>
+      <span>LIVE ENGINE</span>
     </div>
   </header>
 
   <!-- Main Container -->
   <main class="main-container">
 
-    <!-- 1. PLAYGROUND TAB -->
+    <!-- 1. API PLAYGROUND TAB -->
     <section id="tab-playground" class="tab-content active">
       <div class="playground-grid">
         
         <!-- Left Sidebar Presets -->
         <aside class="sidebar-panel">
-          <div class="section-title">REQUEST PRESETS</div>
+          <div class="section-title">PRODUCTION PRESETS</div>
           <div id="presets-list" style="display:flex; flex-direction:column; gap:8px;">
             <!-- Dynamically Rendered -->
           </div>
 
-          <div class="section-title" style="margin-top:20px;">ENVIRONMENT</div>
+          <div class="section-title" style="margin-top:20px;">ACTIVE ENVIRONMENT</div>
           <div style="background:var(--input-bg); padding:10px 14px; border-radius:8px; border:1px solid var(--panel-border); font-size:0.85rem;">
             <div style="color:var(--text-sub); font-weight:600;">ACTIVE ENV</div>
-            <div style="color:var(--accent-cyan); font-weight:700; font-family:var(--font-mono); margin-top:2px;">production-us-east</div>
+            <div id="active-env-badge" style="color:var(--accent-gold); font-weight:700; font-family:var(--font-mono); margin-top:2px;">Production</div>
           </div>
         </aside>
 
@@ -65,26 +65,39 @@
                 <option value="PUT">PUT</option>
                 <option value="DELETE">DELETE</option>
                 <option value="PATCH">PATCH</option>
+                <option value="HEAD">HEAD</option>
+                <option value="OPTIONS">OPTIONS</option>
               </select>
 
-              <input id="req-url" type="text" class="url-input" value="https://jsonplaceholder.typicode.com/posts/1" placeholder="Enter API request URL or /api/v1/mock...">
+              <input id="req-url" type="text" class="url-input" value="https://jsonplaceholder.typicode.com/posts/1" placeholder="Enter REST API endpoint URL (supports {{baseUrl}} variables)...">
               
               <button id="btn-send-req" class="send-btn">
                 SEND REQUEST 🚀
               </button>
             </div>
 
-            <!-- Sub Tabs: Request Body -->
+            <!-- Sub Tabs: Request Editors -->
             <div class="sub-tabs">
               <button class="sub-tab-btn active">JSON BODY</button>
               <button class="sub-tab-btn">HEADERS</button>
             </div>
 
             <textarea id="req-body" class="body-editor" placeholder="Enter JSON payload for POST/PUT requests...">{
-  "title": "Nexus API Test Payload",
+  "title": "Nexus API Production Request",
   "author": "Developer",
   "status": "published"
 }</textarea>
+
+            <div style="margin-top:14px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div class="section-title">CUSTOM REQUEST HEADERS</div>
+                <button id="btn-add-header" class="icon-btn">+ ADD HEADER</button>
+              </div>
+
+              <div id="headers-editor-container">
+                <!-- Dynamically populated key-value rows -->
+              </div>
+            </div>
           </div>
 
           <!-- Response Inspector -->
@@ -101,7 +114,7 @@
             </div>
 
             <div id="response-viewer" class="code-viewer">{
-  "info": "Click 'SEND REQUEST' to execute the API call and view response payload here."
+  "info": "Click 'SEND REQUEST' to execute a real HTTP API request and view real JSON response."
 }</div>
 
             <!-- Code Snippet Generator -->
@@ -126,65 +139,14 @@
       </div>
     </section>
 
-    <!-- 2. MOCK STUDIO TAB -->
-    <section id="tab-mock-studio" class="tab-content">
-      <div style="display:grid; grid-template-columns: 360px 1fr; gap:20px;">
-        
-        <!-- Create Mock Form -->
-        <div class="request-card">
-          <div class="section-title" style="margin-bottom:16px;">CREATE MOCK ENDPOINT</div>
+    <!-- 2. COLLECTIONS & ENVS TAB -->
+    <section id="tab-collections" class="tab-content">
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <div class="section-title" style="font-size:1.1rem; color:#fff;">SAVED API COLLECTIONS & WORKSPACES</div>
 
-          <form id="mock-endpoint-form" style="display:flex; flex-direction:column; gap:14px;">
-            <div>
-              <label style="font-size:0.8rem; color:var(--text-sub); display:block; margin-bottom:4px;">HTTP METHOD</label>
-              <select id="mock-method" class="method-select" style="width:100%;">
-                <option value="GET">GET</option>
-                <option value="POST">POST</option>
-                <option value="PUT">PUT</option>
-                <option value="DELETE">DELETE</option>
-              </select>
-            </div>
-
-            <div>
-              <label style="font-size:0.8rem; color:var(--text-sub); display:block; margin-bottom:4px;">ENDPOINT PATH</label>
-              <input id="mock-path" type="text" class="kv-input" value="/api/v1/products" placeholder="/api/v1/resource">
-            </div>
-
-            <div style="display:flex; gap:10px;">
-              <div style="flex:1;">
-                <label style="font-size:0.8rem; color:var(--text-sub); display:block; margin-bottom:4px;">STATUS CODE</label>
-                <input id="mock-status" type="number" class="kv-input" value="200">
-              </div>
-              <div style="flex:1;">
-                <label style="font-size:0.8rem; color:var(--text-sub); display:block; margin-bottom:4px;">DELAY (MS)</label>
-                <input id="mock-delay" type="number" class="kv-input" value="150">
-              </div>
-            </div>
-
-            <div>
-              <label style="font-size:0.8rem; color:var(--text-sub); display:block; margin-bottom:4px;">JSON RESPONSE BODY</label>
-              <textarea id="mock-json" class="body-editor" style="height:120px;">{
-  "status": "success",
-  "items": [
-    { "id": 1, "product": "Cyber Deck X1" }
-  ]
-}</textarea>
-            </div>
-
-            <button type="submit" class="send-btn" style="justify-content:center; padding:12px;">
-              CREATE MOCK ENDPOINT ⚡
-            </button>
-          </form>
+        <div id="collections-list" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:20px;">
+          <!-- Dynamically Rendered Collections Cards -->
         </div>
-
-        <!-- Active Mock Endpoints List -->
-        <div class="request-card">
-          <div class="section-title" style="margin-bottom:16px;">ACTIVE MOCK ENDPOINTS</div>
-          <div id="mock-endpoints-list" style="display:flex; flex-direction:column; gap:10px;">
-            <!-- Dynamically Rendered -->
-          </div>
-        </div>
-
       </div>
     </section>
 
@@ -198,21 +160,21 @@
         </div>
         <div class="metric-card">
           <div class="metric-title">AVERAGE LATENCY</div>
-          <div id="stat-avg-lat" class="metric-value" style="color:var(--accent-cyan);">-- ms</div>
+          <div id="stat-avg-lat" class="metric-value" style="color:var(--accent-gold);">-- ms</div>
         </div>
         <div class="metric-card">
           <div class="metric-title">SUCCESS RATE</div>
           <div id="stat-success-rate" class="metric-value" style="color:var(--accent-green);">100%</div>
         </div>
         <div class="metric-card">
-          <div class="metric-title">MOCK SERVICES</div>
-          <div class="metric-value" style="color:var(--accent-purple);">ACTIVE</div>
+          <div class="metric-title">ENGINE STATE</div>
+          <div class="metric-value" style="color:var(--accent-gold);">PRODUCTION</div>
         </div>
       </div>
 
       <!-- Real-Time Chart -->
       <div class="chart-card">
-        <div class="section-title" style="margin-bottom:16px;">REAL-TIME LATENCY (MS) MONITOR</div>
+        <div class="section-title" style="margin-bottom:16px;">REAL-TIME NETWORK LATENCY (MS) MONITOR</div>
         <canvas id="latencyChart"></canvas>
       </div>
 
@@ -228,8 +190,8 @@
   </main>
 
   <!-- JavaScript Scripts -->
-  <script src="js/mockServer.js?v=3"></script>
-  <script src="js/analytics.js?v=3"></script>
-  <script src="js/app.js?v=3"></script>
+  <script src="js/collections.js?v=4"></script>
+  <script src="js/analytics.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>

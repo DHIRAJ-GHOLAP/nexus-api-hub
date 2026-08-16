@@ -1,4 +1,4 @@
-/* NEXUS API HUB - Real-Time Analytics & Health Check Engine */
+/* NEXUS API HUB - Real-Time Production Analytics & Service Health Engine */
 
 class AnalyticsEngine {
   constructor() {
@@ -6,8 +6,7 @@ class AnalyticsEngine {
     this.successCount = 0;
     this.errorCount = 0;
     this.latencies = [45, 62, 38, 55, 42, 78, 50, 40, 65, 48];
-    this.history = [];
-    
+
     this.chartCanvas = null;
     this.ctx = null;
   }
@@ -50,7 +49,7 @@ class AnalyticsEngine {
     const successEl = document.getElementById('stat-success-rate');
 
     if (totalEl) totalEl.innerText = this.totalRequests;
-    
+
     if (avgLatEl) {
       const avg = Math.round(this.latencies.reduce((a, b) => a + b, 0) / (this.latencies.length || 1));
       avgLatEl.innerText = `${avg} ms`;
@@ -126,16 +125,17 @@ class AnalyticsEngine {
 
   async runHealthChecks() {
     const services = [
+      { name: 'GitHub Public API', url: 'https://api.github.com/zen' },
       { name: 'JSONPlaceholder API', url: 'https://jsonplaceholder.typicode.com/posts/1' },
-      { name: 'ReqRes Users API', url: 'https://reqres.in/api/users?page=1' },
-      { name: 'Open-Meteo Weather API', url: 'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true' }
+      { name: 'HTTPBin IP Echo', url: 'https://httpbin.org/ip' },
+      { name: 'Open-Meteo Weather API', url: 'https://api.open-meteo.com/v1/forecast?latitude=40.71&longitude=-74.00&current_weather=true' }
     ];
 
     const container = document.getElementById('health-checks-list');
     if (!container) return;
 
     container.innerHTML = '';
-    
+
     for (const s of services) {
       const startTime = performance.now();
       let status = 'ONLINE';
