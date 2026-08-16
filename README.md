@@ -10,6 +10,11 @@
   [![CSS3](https://img.shields.io/badge/CSS3-Vanilla%20Design%20System-1572B6?logo=css3&logoColor=white)](#)
   [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero-f5c542)](#)
 
+  <br />
+
+  ### 🔗 Live Application Link
+  ### **[https://dhiraj-gholap.github.io/nexus-api-hub/](https://dhiraj-gholap.github.io/nexus-api-hub/)**
+
 </div>
 
 ---
